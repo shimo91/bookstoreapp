@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [openF, setOpenF] = useState(false);
-  const [error, setError] = useState(null);
+  const [errordata, setError] = useState(null);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -49,8 +49,9 @@ const Login = () => {
         const decodeToken = jwtDecode(token);
         console.log("navigate")
         // Navigate to the login page
-        navigate('/userHome');
+        navigate('/books');
       }
+      
       return response.data;
     } catch (error) {
       console.log("error", error);
@@ -69,12 +70,12 @@ const Login = () => {
         // Something happened in setting up the request that triggered an Error
         setError("An error occurred while setting up the request.");
       }
-
+      //console.log("errordata",errordata)
       setOpenF(true);
-      // setTimeout(() => {
-      //   setOpenF(false);
-      //   window.location.reload();
-      // }, 3000);
+      setTimeout(() => {
+        setOpenF(false);
+        window.location.reload();
+      }, 4000);
     }
   };
 
@@ -85,9 +86,9 @@ const Login = () => {
 
         <Collapse in={openF}>
           {/* Conditionally render the Alert if there's an error */}
-          {error && (
+          {errordata && (
             <Alert sx={{ mb: 2 }} severity="error" id="failedText">
-              {error}
+              {errordata}
             </Alert>
           )}
         </Collapse>

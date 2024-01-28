@@ -85,4 +85,19 @@ box-shadow: none!important;
 }
 .linkStyle  {
   text-decoration: none;
-};
+}
+.imageBox img
+{
+  vertical-align: middle;
+  width: 90%;
+}
+.imageBox
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  justify-content: center;
+  height: 100%;
+}
+

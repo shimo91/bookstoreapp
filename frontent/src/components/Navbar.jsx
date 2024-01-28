@@ -21,6 +21,8 @@ import { Container, Tooltip } from '@mui/material';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import HomeIcon from '@mui/icons-material/Home';
 import { Link } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -63,6 +65,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+
+    const isLoggedIn = sessionStorage.getItem('userToken');
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -137,8 +142,8 @@ export default function Navbar() {
                 <p>Home</p>
             </MenuItem>
             <MenuItem>
-                <IconButton 
-                    size="large" 
+                <IconButton
+                    size="large"
                     color="inherit"
                     component={Link}
                     to="/login"
@@ -148,8 +153,8 @@ export default function Navbar() {
                 <p>Login</p>
             </MenuItem>
             <MenuItem>
-                <IconButton 
-                    size="large" 
+                <IconButton
+                    size="large"
                     color="inherit"
                     component={Link}
                     to="/signup"
@@ -174,83 +179,110 @@ export default function Navbar() {
     );
 
     return (
-        <Container component="header" maxWidth="false" sx={{padding:"0px!important"}} >
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ backgroundColor: '#489b57' }}>
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        sx={{ mr: 2 }}
-                    >
-                        <AutoStoriesIcon />
-                    </IconButton>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                    //sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                        BookStore
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+        <Container component="header" maxWidth="false" sx={{ padding: "0px!important" }} >
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static" sx={{ backgroundColor: '#489b57' }}>
+                    <Toolbar>
                         <IconButton
                             size="large"
+                            edge="start"
                             color="inherit"
-                            component={Link}
-                            to="/">
-                            <HomeIcon /><span className="navText">Home</span>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            color="inherit"
-                            component={Link}
-                            to="/login">
-                            <LoginIcon /><span className="navText">Login</span>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                            component={Link}
-                            to="/signup"
+                            aria-label="open drawer"
+                            sx={{ mr: 2 }}
                         >
-                            <AppRegistrationIcon /><span className="navText">Sign Up</span>
+                            <AutoStoriesIcon />
                         </IconButton>
-
-                        {/* <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton> */}
-                    </Box>
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                        //sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            <MoreIcon />
-                        </IconButton>
-                    </Box>
-                </Toolbar>
-            </AppBar>
-            {renderMobileMenu}
-            {renderMenu}
-        </Box>
+                            BookStore
+                        </Typography>
+
+                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <IconButton
+                                size="large"
+                                color="inherit"
+                                component={Link}
+                                to="/">
+                                <HomeIcon /><span className="navText">Home</span>
+                            </IconButton>
+                            {isLoggedIn ? (
+                                <>
+                                    <IconButton
+                                        size="large"
+                                        color="inherit"
+                                        component={Link}
+                                        to="/books"
+                                    >
+                                        <LibraryBooksIcon /><span className="navText">Books</span>
+                                    </IconButton>
+                                    <IconButton
+                                        size="large"
+                                        edge="end"
+                                        aria-label="account of current user"
+                                        aria-controls={menuId}
+                                        aria-haspopup="true"
+                                        color="inherit"
+                                        component={Link}
+                                        to="/userAccount"
+                                    >
+                                        <AccountCircle /><span className="navText"> My Account</span>
+                                    </IconButton>
+
+                                    <IconButton
+                                        size="large"
+                                        color="inherit"
+                                        component={Link}
+                                        to="/logout"
+                                    >
+                                        <LogoutIcon /><span className="navText">Logout</span>
+                                    </IconButton>
+                                </>
+                            ) : (
+                                <>
+                                    <IconButton
+                                        size="large"
+                                        color="inherit"
+                                        component={Link}
+                                        to="/login"
+                                    >
+                                        <LoginIcon /><span className="navText">Login</span>
+                                    </IconButton>
+
+                                    <IconButton
+                                        size="large"
+                                        aria-label="show 17 new notifications"
+                                        color="inherit"
+                                        component={Link}
+                                        to="/signup"
+                                    >
+                                        <AppRegistrationIcon /><span className="navText">Sign Up</span>
+                                    </IconButton>
+                                </>
+                            )}
+
+                        </Box>
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="show more"
+                                aria-controls={mobileMenuId}
+                                aria-haspopup="true"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                            >
+                                <MoreIcon />
+                            </IconButton>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                {renderMobileMenu}
+                {renderMenu}
+            </Box>
         </Container>
     );
 }

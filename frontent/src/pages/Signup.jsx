@@ -223,7 +223,6 @@ export default function SignUp() {
                           )}
                         />
                       </Grid>
-                      {/* made changes here */}
                       <Grid item xs={12}>
                         <Controller
                           name="password"
@@ -250,7 +249,6 @@ export default function SignUp() {
                           )}
                         />
                       </Grid>
-                      {/* change ends here */}
                     </Grid>
                     <Button
                       type="submit"
@@ -259,7 +257,7 @@ export default function SignUp() {
                       sx={{
                         mt: 3, mb: 2, bgcolor: '#871427', color: (255, 255, 255),
                         '&:hover': {
-                          bgcolor: '#a3293d', // Change to the desired hover color
+                          bgcolor: '#a3293d', 
                         },
                       }}
                     >

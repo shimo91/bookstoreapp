@@ -15,7 +15,7 @@ function verifytoken(req,res,next){
         const token = req.headers.token;
        // console.log("token :"+token)
         if(!token) throw 'Unauthorized';
-        let payload=jwt.verify(token,'yourSecretKey');
+        let payload=jwt.verify(token,'bookstorekey');
         if(!payload) throw 'Unauthorized';
         req.authUser=payload;
         //res.status(200).send(payload);
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
                 const user_name=user.first_name+" "+user.last_name;
                 // Generate token with a unique identifier (e.g., user ID)
                 let payload = { email: username, password: password ,userid : user._id,name : user_name,userstatus:userstatus};
-                const token = jwt.sign(payload, 'yourSecretKey');
+                const token = jwt.sign(payload, 'bookstorekey');
     
                 // Send success response with token
              res.status(200).json({ message: 'success', token});
@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
         } else {
             console.log('User not found');
             // Authentication failed
-            res.status(400).send('Invalid credentials');
+            res.status(400).json({message:'Invalid credentials'});
         }
 }catch (err) {
         console.error('Error finding user:', err);

@@ -21,6 +21,10 @@ app.use('/signup', signupRoutes)
 const loginRoutes = require('./Routes/loginRoutes')
 app.use('/login',loginRoutes)
 
+//book route
+const bookRoutes = require('./Routes/bookRoutes')
+app.use('/books',bookRoutes)
+
 
 app.listen(PORT,()=>{
     console.log('Listening to '+ PORT)
