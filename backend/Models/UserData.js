@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema; 
-const userSchema = mongoose.Schema({
+const { Schema, ObjectId } = mongoose;
+const userSchema = Schema({
     
     username: {
         type:String,
@@ -23,13 +23,24 @@ const userSchema = mongoose.Schema({
         type: String
     
     },
+    address: {
+        type: String
+    
+    },
     start_date: {
         type: Date
     },
     user_status: {
         type: Boolean,
-        default: false, 
+        default: true, 
       },
+    libraryId: String,
+    books: [
+        {
+          bookid: ObjectId,
+          bookname:String,
+        }
+      ],
 })
 
 const UserData = mongoose.model('userdatas',userSchema)

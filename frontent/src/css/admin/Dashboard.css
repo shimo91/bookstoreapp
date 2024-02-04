@@ -1,0 +1,51 @@
+.activatedLink{
+    color: #146e87!important;
+    text-decoration: none;
+}
+nav a
+{
+    text-decoration: none!important;
+    color:#000;
+}
+.adfooter
+{
+    position: absolute;
+    bottom: 0!important;
+    padding: 10px 0px !important;
+    text-align: center;
+    justify-content: center!important;
+    width: 75%;
+    height: 100%;
+    color: #fff;
+}
+.editor-input
+{
+    height: 200px;
+    width: 100%;
+}
+.commonButton
+{
+    background-color: #146e87!important;
+    color: white;
+
+}
+
+.adfooterdiv
+{
+    
+    background-color: #146e87;
+    position: fixed;
+    width: 100%;
+    bottom: 0!important;
+    padding: 0px;
+    height: 40px;
+    margin-top: 5px;
+}
+.adfooterContainer
+{
+    margin-top: 20px!important;
+}
+.textAlignLeft
+{
+    text-align: left !important;
+}

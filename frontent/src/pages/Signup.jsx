@@ -12,7 +12,8 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardMedia, Collapse } from '@mui/material';
 import { Controller, useForm } from "react-hook-form"
-import Alert from '@mui/material/Alert';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignUp() {
 
@@ -21,9 +22,7 @@ export default function SignUp() {
 
   const navigate = useNavigate()
 
-  const [open, setOpen] = useState(false);
-  const [openF, setOpenF] = useState(false);
-  const [error, setError] = useState(null);
+  const [errordata, setError] = useState(null);
 
 
   const onSubmit = async (data) => {
@@ -36,19 +35,23 @@ export default function SignUp() {
       phone: data.phoneNumber,
       first_name: data.firstName,
       last_name: data.lastName,
-      user_status: true,
+      address: data.address,
     }
     try {
       const response = await axios.post('http://127.0.0.1:4000/signup', formData);
       console.log("msg :" + response.data.message);
-      if (response.data.success) {
-        // Navigate to the login page
-        navigate('/login');
-        setOpen(true);
-        setTimeout(() => {
-          setOpen(false);
-          navigate('/login');
-        }, 3000);
+      if (response.data.message) {
+        console.log("success",response.data.message)
+        toast.success(response.data.message+", Please login with your credentials", {
+          // Set to 15sec
+          position: "top-right",
+          autoClose: 3000,
+          onClose: () => {
+            // Navigate to the login page after the toast is closed
+            navigate('/login');
+          },
+  
+      });
 
       }
       return response.data;
@@ -70,32 +73,20 @@ export default function SignUp() {
         setError("An error occurred while setting up the request.");
       }
 
-      setOpenF(true);
-      setTimeout(() => {
-        setOpenF(false);
-        window.location.reload();
-      }, 3000);
+      toast.error(errordata, {
+        // Set to 15sec
+        position: "top-right",
+        autoClose: 5000,
+    });
+     
     }
   };
 
   return (
     <div className='signup'>
       <Box sx={{ width: '100%' }}>
-        <Collapse in={open}>
-          <Alert sx={{ mb: 2 }}
-            severity="success"
-          >
-            Registered successfully, Please login.
-          </Alert>
-        </Collapse>
-        <Collapse in={openF}>
-          {/* Conditionally render the Alert if there's an error */}
-          {error && (
-            <Alert sx={{ mb: 2 }} severity="error" id="failedText">
-              {error}
-            </Alert>
-          )}
-        </Collapse>
+        <ToastContainer />
+        
       </Box>
       <Box
         sx={{
@@ -200,6 +191,33 @@ export default function SignUp() {
                       </Grid>
                       <Grid item xs={12}>
                         <Controller
+                          name="password"
+                          control={control}
+                          rules={{
+                            required: 'Password is required',
+                            minLength: {
+                              value: 6,
+                              message: 'Password must be at least 6 characters',
+                            }
+                          }}
+                          render={({ field }) => (
+                            <>
+                              <TextField
+                                {...field}
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                              />
+                              {errors.password && <div className="errorMessageStyle">{errors.password.message}</div>}
+                            </>
+                          )}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <Controller
                           name="phoneNumber"
                           control={control}
                           rules={{
@@ -225,26 +243,22 @@ export default function SignUp() {
                       </Grid>
                       <Grid item xs={12}>
                         <Controller
-                          name="password"
+                          name="address"
                           control={control}
                           rules={{
-                            required: 'Password is required',
-                            minLength: {
-                              value: 6,
-                              message: 'Password must be at least 6 characters',
-                            }
+                            required: 'Address is required'
                           }}
                           render={({ field }) => (
                             <>
                               <TextField
                                 {...field}
                                 fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
+                                name="address"
+                                label="Address"
+                                type="text"
+                                id="address"
                               />
-                              {errors.password && <div className="errorMessageStyle">{errors.password.message}</div>}
+                              {errors.address && <div className="errorMessageStyle">{errors.address.message}</div>}
                             </>
                           )}
                         />

@@ -36,8 +36,6 @@ router.get('/',async (req, res) => {
 })
 
 
-
-
 router.post('/', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -77,6 +75,64 @@ router.post('/', async (req, res) => {
 })
 
 
+router.get('/:id',verifytoken,async(req,res)=>{
+    try {
+        const id=req.params.id;
+        const data = await userData.findById(id);
+        console.log("data is "+data)
+        res.status(200).send(data);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+})
 
+router.post('/savephone', async (req, res) => {
+    try {
+        const { userid,phone } = req.body;
+
+
+        // Find the user by some unique identifier
+        const user = await userData.findOne({ _id: userid });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update the phone field
+        user.phone = phone;
+
+        // Save the updated user
+        await user.save();
+
+        res.json({ message: "successfully saved"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+router.post('/saveaddress', async (req, res) => {
+    try {
+        const { userid,address } = req.body;
+
+
+        // Find the user by some unique identifier
+        const user = await userData.findOne({ _id: userid });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Update the phone field
+        user.address = address;
+
+        // Save the updated user
+        await user.save();
+
+        res.json({ message: "successfully saved"});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const bookSchema = mongoose.Schema({
+const { Schema, ObjectId } = mongoose;
+const bookSchema = Schema({
     title: String,
     subtitle: String,
     author: String,
@@ -13,7 +14,27 @@ const bookSchema = mongoose.Schema({
     isbn_number:String,
     language:String,
     published_on:String,
-    rental_period:Number
+    rental_period:Number,
+    reviews: [
+        {
+          username: String,
+          content: String
+        }
+      ],
+      rentUser: [
+        {
+          userid: ObjectId,
+          username:String,
+          libraryid:String,
+          address:String,
+          phoneNumber:String,
+          user_status:{
+            type:Boolean,
+            default:true,
+          }
+        }
+      ],
+
 })
 const BookData = mongoose.model('book', bookSchema);
 module.exports = BookData;

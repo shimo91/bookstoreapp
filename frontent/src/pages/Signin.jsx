@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Button, Collapse, Container, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Collapse, Container, Snackbar, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const { control, handleSubmit, setValue, watch, formState: { errors }, clearErrors, reset } = useForm();
@@ -18,7 +20,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const [openF, setOpenF] = useState(false);
   const [errordata, setError] = useState(null);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +52,7 @@ const Login = () => {
         // Navigate to the login page
         navigate('/books');
       }
-      
+
       return response.data;
     } catch (error) {
       console.log("error", error);
@@ -70,12 +71,12 @@ const Login = () => {
         // Something happened in setting up the request that triggered an Error
         setError("An error occurred while setting up the request.");
       }
-      //console.log("errordata",errordata)
-      setOpenF(true);
-      setTimeout(() => {
-        setOpenF(false);
-        window.location.reload();
-      }, 4000);
+    
+      toast.error(errordata, {
+        // Set to 15sec
+        position: "top-right",
+        autoClose: 5000,
+    });
     }
   };
 
@@ -83,15 +84,8 @@ const Login = () => {
   return (
     <div>
       <Box sx={{ width: '100%' }}>
-
-        <Collapse in={openF}>
-          {/* Conditionally render the Alert if there's an error */}
-          {errordata && (
-            <Alert sx={{ mb: 2 }} severity="error" id="failedText">
-              {errordata}
-            </Alert>
-          )}
-        </Collapse>
+        {/* For notifications */}
+        <ToastContainer />
       </Box>
       <Box
 

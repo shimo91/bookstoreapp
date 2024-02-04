@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Typography, Grid, Card, CardActionArea, CardContent, CardMedia } from '@mui/material';
+import { Container, Typography, Grid, Card, CardActionArea, CardContent } from '@mui/material';
 import BookSlider from '../components/BookSlider';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -38,15 +38,6 @@ const Home = () => {
               <Link to={`/bookDetail/${book._id}`} className='linkStyle'>
               <Card>
                 <CardActionArea>
-                  {/* <CardMedia
-                    component="img"
-                    sx={{ width: '150px',
-                      margin: 'auto',  // Center horizontally
-                      display: 'block', 
-                    }}
-                    image={book.imageUrl}
-                    alt={book.title}
-                  /> */}
                   <img src={book.imageUrl} style={{height:'250px',marginTop:'15px'}} alt={book.title}/>
                   <CardContent className='linkStyle'>
                     <Typography component="div" fontSize='6'>

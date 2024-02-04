@@ -1,58 +1,116 @@
 import React from 'react'
 
-import { Dialog, DialogTitle, DialogContent, Button, Box, Grid, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Button, Box, Grid, TextField, InputLabel } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import axiosInstance from '../axiosinterceptor';
 
-const RequestForm = ({ handleClose,bookId }) => {
-  console.log("bookid",bookId)
+const RequestForm = ({ handleClose, bookId, userName, userid }) => {
 
-  const [book, setData] = useState([]);
+  const [errordata, setError] = useState();
+  console.log("bookid", bookId, "username", userName)
+  const [book, setBook] = useState({});
+  const [userdetail, setUserDetail] = useState({});
+  const [refresh, setRefresh] = useState(false); // State variable to trigger refresh
+
   useEffect(() => {
-    console.log("axios")
     axios.get('http://127.0.0.1:4000/books/bookDetail/' + bookId).then((res) => {
-      setData(res.data);
-      console.log("list of discussion : ",res.data);
+      setBook(res.data);
+      console.log("list of discussion : ", res.data);
     })
   }, [bookId]);
-  // useEffect(() => {
-  //   const fetchBookDetails = async () => {
-  //     try {
-  //       console.log("axios")
-  //       const response = await axios.get(`http://127.0.0.1:4000/books/bookDetail/${bookId}`);
-  //       setData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching book details:', error);
-  //       // Handle error, e.g., setError(error);
-  //     }
-  //   };
-  
-  //   fetchBookDetails();
-  // });
 
+  useEffect(() => {
+    console.log("userid inside effect", userid)
+    axiosInstance.get('login/' + userid).then((res) => {
+      setUserDetail(res.data);
+      console.log("userdetail : ", res.data);
+    })
+  }, [userid]);
 
-  const { control, handleSubmit, setValue, watch, formState: { errors }, clearErrors, reset } = useForm({
-    defaultValues: {
-      bookname: book.title || '', // Set the default value for 'bookname'
-      // Add default values for other fields if needed
-    }
-  });
+  const { control, handleSubmit, setValue, watch, formState: { errors }, clearErrors, reset } = useForm();
 
-  const [open, setOpen] = useState(false);
-  const [openF, setOpenF] = useState(false);
-  const [error, setError] = useState(null);
+  useEffect(() => {
+    // Set default values when book changes
+    setValue('bookname', book.title);
+    setValue('author', book.author);
+    setValue('username', userName);
+    setValue('libraryid', userdetail.libraryId);
+    setValue('phoneNumber', userdetail.phone);
+    setValue('address', userdetail.address);
+  }, [book,userdetail,setValue,userName]);
+
 
 
   const handleCloseButtonClick = () => {
     handleClose(); // Ensure that handleClose is correctly called
   };
+
+
+  const onSubmit = async (data) => {
+    const formData = {
+      userid: userid,
+      bookid: bookId,
+      username:data.username,
+      libraryid:data.libraryid,
+      address:data.address,
+      phoneNumber:data.phoneNumber,
+      bookname:data.bookname,
+    }
+
+    console.log("data is", formData)
+    axiosInstance.post('books/bookRent', formData).then((res) => {
+      if (res.data.message) {
+        console.log("success", res.data.message)
+        toast.success(res.data.message, {
+          // Set to 15sec
+          position: "top-right",
+          autoClose: 3000,
+          onClose: () => {
+            handleClose();
+            
+          },
+
+        });
+        
+      }
+    }).catch((error) => {
+      console.log('Error adding review:', error);
+
+      // Set the error message in the state
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(error.response.data.message);
+      } else if (error.request) {
+        // The request was made but no response was received
+        setError("No response received from the server.");
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError("An error occurred while setting up the request.");
+      }
+
+      toast.error(errordata, {
+        // Set to 15sec
+        position: "top-right",
+        autoClose: 3000,
+      });
+    })
+
+  }
+
   return (
     <>
-      <DialogTitle>Rent Request Form - {book.title}</DialogTitle>
+      <Box sx={{ width: '100%' }}>
+        {/* For notifications */}
+        <ToastContainer />
+      </Box>
+      <DialogTitle>Rent Request Form </DialogTitle>
       <DialogContent >
-        <form onSubmit={handleSubmit} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Box noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -62,14 +120,14 @@ const RequestForm = ({ handleClose,bookId }) => {
                   rules={{ required: 'Book Name is required' }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="bookname">Book Name</InputLabel>
                       <TextField
                         {...field}
                         autoComplete="given-name"
                         name="bookname"
                         fullWidth
                         id="bookname"
-                        label="Book Name"
-                        InputProps={{ readOnly: false }}
+                        InputProps={{ readOnly: true }}
                       />
                       {errors.bookname && <div className="errorMessageStyle">{errors.bookname.message}</div>}
                     </>
@@ -83,13 +141,13 @@ const RequestForm = ({ handleClose,bookId }) => {
                   rules={{ required: 'Author is required' }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="author">Author</InputLabel>
                       <TextField
                         {...field}
                         name="author"
                         fullWidth
                         id="author"
-                        label="Author"
-                        defaultValue={book.author}
+                        InputProps={{ readOnly: true }}
                       />
                       {errors.author && <div className="errorMessageStyle">{errors.author.message}</div>}
                     </>
@@ -105,12 +163,13 @@ const RequestForm = ({ handleClose,bookId }) => {
                   }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="username">Name</InputLabel>
                       <TextField
                         {...field}
                         fullWidth
                         name="username"
-                        label="Name"
                         id="username"
+                        InputProps={{ readOnly: true }}
                       />
                       {errors.username && <div className="errorMessageStyle">{errors.username.message}</div>}
                     </>
@@ -126,12 +185,13 @@ const RequestForm = ({ handleClose,bookId }) => {
                   }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="libraryid">Library Id</InputLabel>
                       <TextField
                         {...field}
                         fullWidth
                         name="libraryid"
-                        label="Library Id"
                         id="libraryid"
+                        InputProps={{ readOnly: true }}
                       />
                       {errors.libraryid && <div className="errorMessageStyle">{errors.libraryid.message}</div>}
                     </>
@@ -147,11 +207,11 @@ const RequestForm = ({ handleClose,bookId }) => {
                   }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="address">Address</InputLabel>
                       <TextField
                         {...field}
                         fullWidth
                         id="address"
-                        label="Address"
                         name="address"
                       />
                       {errors.address && <div className="errorMessageStyle">{errors.address.message}</div>}
@@ -172,11 +232,11 @@ const RequestForm = ({ handleClose,bookId }) => {
                   }}
                   render={({ field }) => (
                     <>
+                      <InputLabel htmlFor="phoneNumber">Phone Number</InputLabel>
                       <TextField
                         {...field}
                         fullWidth
                         id="phoneNumber"
-                        label="Phone Number"
                         name="phoneNumber"
                       />
                       {errors.phoneNumber && <div className="errorMessageStyle">{errors.phoneNumber.message}</div>}
@@ -184,11 +244,11 @@ const RequestForm = ({ handleClose,bookId }) => {
                   )}
                 />
               </Grid>
-              
+
             </Grid>
 
 
-            <Grid container justifyContent="center" sx={{marginTop:2}}>
+            <Grid container justifyContent="center" sx={{ marginTop: 2 }}>
               <Grid item>
 
                 <Button type="submit" variant="contained" style={{ marginRight: '8px' }}>
@@ -208,10 +268,10 @@ const RequestForm = ({ handleClose,bookId }) => {
   );
 };
 
-const StyledModal = ({ isOpen, handleClose,bookData }) => {
+const StyledModal = ({ isOpen, handleClose, bookData, userName, userId }) => {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth="md" fullWidth>
-      <RequestForm handleClose={handleClose} bookId={bookData}/>
+      <RequestForm handleClose={handleClose} bookId={bookData} userName={userName} userid={userId} />
     </Dialog>
   );
 };
