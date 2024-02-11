@@ -13,8 +13,10 @@ import axios from 'axios';
 import StyledModal from '../userDashboard/RequestForm';
 import CustomPagination from '../components/CustomPagination';
 import { jwtDecode } from "jwt-decode";
-import axiosInstance from "../axiosinterceptor"
+import { axiosInstance } from "../axiosinterceptor"
 import { ToastContainer, toast } from "react-toastify";
+import { arrayBufferToBase64 } from '../utils';
+import SimilarBooks from '../components/SimilarBooks';
 
 const BookDetail = () => {
   const navigate = useNavigate()
@@ -27,16 +29,29 @@ const BookDetail = () => {
   const [rentuserlist, setRentUserlist] = useState([]);
   const [canReview, setCanReview] = useState(false);
   const [refresh, setRefresh] = useState(false); // State variable to trigger refresh
+  const [similarBooks,setSimilarBooks] = useState([]);
 
   useEffect(() => {
     axios.get('http://127.0.0.1:4000/books/bookDetail/' + id).then((res) => {
       setData(res.data);
-     // console.log("list of rentuserid : ",res.data.rentUser);
+      // console.log("list of rentuserid : ",res.data.rentUser);
       setreviewlist(res.data.reviews)
       setRentUserlist(res.data.rentUser.map(user => user.userid));
       setContent(''); // Reset the review field value after refresh
+      // Fetch similar books based on the genre
+      if (res.data.genre) {
+        axios.get(`http://127.0.0.1:4000/books/similarBooks?genre=${res.data.genre}&currentBookId=${res.data._id}`)
+          .then((similarBooksRes) => {
+            // Handle the similar books data
+            console.log('Similar Books:', similarBooksRes.data);
+            setSimilarBooks(similarBooksRes.data)
+          })
+          .catch((error) => {
+            console.error('Error fetching similar books:', error);
+          });
+      }
     })
-  }, [id,refresh]);
+  }, [id, refresh]);
 
 
   const token = sessionStorage.getItem("userToken");
@@ -48,11 +63,11 @@ const BookDetail = () => {
       //console.log("decode",decodeToken)
       setUserId(decodeToken.userid);
       setUsername(decodeToken.name);
-      console.log("rentuserlist",rentuserlist);
+      console.log("rentuserlist", rentuserlist);
       if (rentuserlist.includes(userid)) {
         const user = book.rentUser.find((user) => user.userid === userid);
 
-        if (user && user.user_status) {
+        if (user && user.deliveryStatus) {
           setCanReview(true);
           console.log(`User ${userid} has rented this book. ${canReview}`);
         } else {
@@ -61,7 +76,7 @@ const BookDetail = () => {
 
       }
     }
-  }, [token,id,book.rentUser, rentuserlist, canReview]); // Dependency on token ensures it runs only when token changes
+  }, [token, id, book.rentUser, rentuserlist, canReview]); // Dependency on token ensures it runs only when token changes
 
 
   const handleButtonClick = () => {
@@ -113,11 +128,11 @@ const BookDetail = () => {
           autoClose: 1500,
           onClose: () => {
             setContent('');
-                    
+
           },
 
         });
-        
+
         setRefresh(!refresh);
       }).catch((error) => {
         console.log('Error adding review:', error);
@@ -133,7 +148,7 @@ const BookDetail = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   //const pageCount = 10; // Replace with the actual total number of pages
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const pageCount = Math.ceil(reviewlist.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -145,6 +160,22 @@ const BookDetail = () => {
     // Perform any additional logic (e.g., fetch data for the new page) here
   };
   /////////////////////......Pagination Review End......////////////////////////////
+
+
+
+  /////////// .........SimilarBooks Start Here..............//////////////////////
+
+  // const similarBooks = [
+  //   { id: 1, title: 'Book 1', author: 'Author 1' },
+  //   { id: 2, title: 'Book 2', author: 'Author 2' },
+  //   { id: 3, title: 'Book 3', author: 'Author 3' },
+  //   { id: 4, title: 'Book 4', author: 'Author 4' },
+  //   { id: 5, title: 'Book 5', author: 'Author 5' },
+  //   { id: 6, title: 'Book 6', author: 'Author 6' },
+  //   // Add more books as needed
+  // ];
+
+  /////////// .........SimilarBooks Ends Here..............//////////////////////
 
 
   return (
@@ -162,7 +193,7 @@ const BookDetail = () => {
         <Box
           className="imageBox"
         >
-          <img src={book.imageUrl} />
+          <img src={book.imageUrl && `data:image/jpeg;base64,${arrayBufferToBase64(book.imageUrl.data)}`} />
         </Box>
 
       </Grid>
@@ -207,9 +238,12 @@ const BookDetail = () => {
         </Box>
       </Grid>
 
-      {/* Render the StyledModal component */
-      }
-      <StyledModal isOpen={isModalOpen} handleClose={handleModalClose} bookData={book._id} userName={username} userId={userid}/>
+      {/* Modal for form request */}
+
+      <StyledModal isOpen={isModalOpen} handleClose={handleModalClose} bookData={book._id} userName={username} userId={userid} />
+      {/* End modal for form request */}
+
+      {/* Book Description   */}
       <Container width="lg">
         <Grid item
           xs={false}
@@ -262,7 +296,7 @@ const BookDetail = () => {
         {/* ******* Add review section ends here******** */}
 
         {/* ******* customer review section ******* */}
-        <Container width="lg">
+        
           <Grid item
             xs={false}
             sm={12}
@@ -271,7 +305,7 @@ const BookDetail = () => {
           >
             <Typography variant="h6" textAlign="left">Customer Reviews ({(book.reviews) ? book.reviews.length : 0})</Typography>
           </Grid>
-        </Container>
+       
 
         <Grid item xs={12} md={12} lg={12} textAlign={'right'}>
           {(book.reviews) ? (
@@ -316,6 +350,13 @@ const BookDetail = () => {
 
         </Grid>
 
+        {/* Render SimilarBooksCarousel with similar books data */}
+        {similarBooks && (
+        <Grid item xs={12} md={12} lg={12} textAlign={'right'} marginTop='10px'>
+          <Typography variant="h6" textAlign="left">Similar Books</Typography>
+          <SimilarBooks similarBooks={similarBooks} />
+        </Grid>
+        )}
       </Container>
 
     </Grid >

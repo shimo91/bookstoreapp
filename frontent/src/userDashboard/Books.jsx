@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Container, Typography, Grid, Card, CardActionArea, CardContent, Pagination, TextField, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import '../css/Style.css'
-import axiosInstance from '../axiosinterceptor';
+import {axiosInstance} from '../axiosinterceptor';
 import './UserStyle.css'
+import { arrayBufferToBase64 } from '../utils';
 
 const Books = () => {
 
@@ -12,7 +13,7 @@ const Books = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axiosInstance.get('/books/getbooklist/');
+                const response = await axiosInstance.get('/books/getbooklist');
                 console.log("book data is", response.data);
                 setbookdata(response.data);
             } catch (error) {
@@ -108,9 +109,9 @@ const Books = () => {
                         <Link to={`/bookDetail/${book._id}`} className='linkStyle'>
                             <Card>
                                 <CardActionArea>
-                                    <img src={book.imageUrl} style={{ height: '250px', marginTop: '15px' }} alt={book.title} />
+                                    <img src={book.imageUrl && `data:image/jpeg;base64,${arrayBufferToBase64(book.imageUrl.data)}`} style={{ height: '250px', marginTop: '15px' }} alt={book.title} />
                                     <CardContent className='linkStyle'>
-                                        <Typography component="div" fontSize='6'>
+                                        <Typography component="div" fontSize='6' color="textSecondary">
                                             {book.title}
                                         </Typography>
                                         <Typography variant="h7" color="textSecondary">

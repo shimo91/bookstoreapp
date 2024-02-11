@@ -4,7 +4,10 @@ const bookSchema = Schema({
     title: String,
     subtitle: String,
     author: String,
-    imageUrl: String,
+    imageUrl: {
+      type: Buffer, // Store the image data as a buffer
+      required: true,
+    },
     genre: String,
     available: {
         type: Boolean,
@@ -12,7 +15,7 @@ const bookSchema = Schema({
     },
     description:String,
     isbn_number:String,
-    language:String,
+    languages:String,
     published_on:String,
     rental_period:Number,
     reviews: [
@@ -28,10 +31,14 @@ const bookSchema = Schema({
           libraryid:String,
           address:String,
           phoneNumber:String,
-          user_status:{
+          deliveryStatus:{
             type:Boolean,
-            default:true,
-          }
+            default:false,
+          },
+          bookedon: {
+            type: Date,
+            default: Date.now,
+          },
         }
       ],
 

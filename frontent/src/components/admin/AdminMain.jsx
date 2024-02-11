@@ -7,7 +7,7 @@ const AdminMain = (props) => {
     return (
       <div>
           <AdminNavbar/>
-          <Container component="middle" maxWidth="lg" sx={{padding:"30px"}}>
+          <Container component="middle" maxWidth="false" sx={{padding:"30px"}}>
           <div >
           {props.child}
           </div>

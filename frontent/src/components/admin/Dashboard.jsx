@@ -112,7 +112,7 @@ export default function Dashboard(props) {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="false" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3} sx={{ml:0, width:'100%'}}>
                            
             {props.child}

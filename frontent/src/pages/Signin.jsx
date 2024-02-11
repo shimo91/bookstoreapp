@@ -13,6 +13,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PasswordIcon from '@mui/icons-material/Password';
 
 const Login = () => {
   const { control, handleSubmit, setValue, watch, formState: { errors }, clearErrors, reset } = useForm();
@@ -71,12 +72,12 @@ const Login = () => {
         // Something happened in setting up the request that triggered an Error
         setError("An error occurred while setting up the request.");
       }
-    
+
       toast.error(errordata, {
         // Set to 15sec
         position: "top-right",
         autoClose: 5000,
-    });
+      });
     }
   };
 
@@ -113,7 +114,6 @@ const Login = () => {
                 <Box noValidate sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} >
-
                       <Controller
                         name="username"
                         control={control}
@@ -159,10 +159,15 @@ const Login = () => {
                               InputProps={{
                                 startAdornment: (
                                   <InputAdornment position="start">
+                                    <PasswordIcon />
+                                  </InputAdornment>
+                                ),
+                                endAdornment: (
+                                  <InputAdornment position="end">
                                     <IconButton
                                       aria-label="toggle password visibility"
                                       onClick={handleTogglePasswordVisibility}
-                                      edge="start"
+                                      edge="end"
                                     >
                                       {showPassword ? <Visibility /> : <VisibilityOff />}
                                     </IconButton>

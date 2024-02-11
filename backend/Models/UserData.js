@@ -20,15 +20,16 @@ const userSchema = Schema({
         type: String,
     },
     phone: {
-        type: String
+        type: Number
     
     },
     address: {
         type: String
     
     },
-    start_date: {
-        type: Date
+    registeredon: {
+        type: Date,
+        default: Date.now,
     },
     user_status: {
         type: Boolean,

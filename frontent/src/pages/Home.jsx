@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { arrayBufferToBase64 } from '../utils';
 
 const Home = () => {
   const [bookData, setbookdata] = useState([]);
@@ -38,9 +39,9 @@ const Home = () => {
               <Link to={`/bookDetail/${book._id}`} className='linkStyle'>
               <Card>
                 <CardActionArea>
-                  <img src={book.imageUrl} style={{height:'250px',marginTop:'15px'}} alt={book.title}/>
+                  <img src={book.imageUrl && `data:image/jpeg;base64,${arrayBufferToBase64(book.imageUrl.data)}`} style={{height:'250px',marginTop:'15px'}} alt={book.title}/>
                   <CardContent className='linkStyle'>
-                    <Typography component="div" fontSize='6'>
+                    <Typography component="div" fontSize='6' color="textSecondary">
                     {book.title}
                     </Typography>
                     <Typography variant="h7" color="textSecondary">

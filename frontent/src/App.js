@@ -15,6 +15,11 @@ import AdminHome from './pages/admin/AdminHome';
 import AdLogin from './pages/admin/AdLogin';
 import Dashboard from './components/admin/Dashboard'
 import { AdLogout } from './pages/admin/AdLogout'
+import { RequireAuth } from './Auth';
+import { RequireAdminAuth } from './AdminAuth';
+import RentUserList from './pages/admin/RentUserList';
+import Users from './pages/admin/Users';
+import Detail from './pages/admin/Detail';
 
 function App() {
   return (
@@ -25,11 +30,14 @@ function App() {
         <Route path='/login' element={<Main child = {<Signin/>}/>}/>
         <Route path='/signup' element={<Main child = {<Signup/>}/>}/>
         <Route path='/bookDetail/:id' element={<Main child = {<BookDetail/>}/>}/>
-        <Route path='/books' element={<Main child = {<Books/>}/>}/>
-        <Route path='/profile' element={<Main child = {<UserAccount/>}/>}/>
+        <Route path='/books' element={<RequireAuth><Main child = {<Books/>}/></RequireAuth>}/>
+        <Route path='/profile' element={<RequireAuth><Main child = {<UserAccount/>}/></RequireAuth>}/>
         <Route path='/logout' element={<Logout/>}/>
         <Route path='/admin' element={<AdLogin/>}/>
-        <Route path='/adminHome' element={<Dashboard child = {<AdminHome/>}/>}/>
+        <Route path='/adminHome' element={<RequireAdminAuth><Dashboard child = {<AdminHome/>}/></RequireAdminAuth>}/>
+        <Route path='/rentlist' element={<RequireAdminAuth><Dashboard child = {<RentUserList/>}/></RequireAdminAuth>}/>
+        <Route path='/users' element={<RequireAdminAuth><Dashboard child = {<Users/>}/></RequireAdminAuth>}/>
+        <Route path='/detail/:id' element={<RequireAdminAuth><Dashboard child = {<Detail/>}/></RequireAdminAuth>}/>
         <Route path='/adlogout' element={<AdLogout/>}/>
       </Routes>
       
