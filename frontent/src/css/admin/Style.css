@@ -16,6 +16,8 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  background-image: url('../../../public/images/adminbg.jpg');
+  background-size: cover;
 }
 .linkStyle  {
   text-decoration: none;
