@@ -40,7 +40,7 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:4000/login', formData);
+      const response = await axios.post('http://127.0.0.1:4000/login/', formData);
       console.log("msg :" + response.data.message);
       if (response.data.message === 'success') {
         sessionStorage.setItem('userToken', response.data.token);

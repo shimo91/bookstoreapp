@@ -192,12 +192,27 @@ router.get('/userOrders/:id', verifytoken, async (req, res) => {
         // Extract the book details from the books array in user schema
     const orderDetails = await Promise.all(user.books.map(async (book) => {
         const bookDetail = await BookData.findById(book.bookid);
+    //     return {
+    //       bookid: book.bookid,
+    //       bookname: book.bookname,
+    //       bookDetails: bookDetail,
+    //     };
+    //   }));
+
+//        // Check if bookDetail and rentUser exist before filtering
+//   const filteredRentUser = bookDetail && bookDetail.rentUser[0]
+//   ? bookDetail.rentUser.filter(user => user.userid === userid)
+//   : [];
+// Assuming bookDetail is the document retrieved from MongoDB
+const filteredRentUser = bookDetail.rentUser.filter(user => user.userid.toString() === userid);
+
         return {
-          bookid: book.bookid,
-          bookname: book.bookname,
-          bookDetails: bookDetail,
+            bookid: book.bookid,
+            bookname: book.bookname,
+            bookDetails: bookDetail,
+            rentUser: filteredRentUser,
         };
-      }));
+        }));
       //console.log("orderlist",orderDetails);
       orderDetails.sort((a, b) => new Date(b.bookDetails.rentUser[0].bookedon) - new Date(a.bookDetails.rentUser[0].bookedon));
       res.json(orderDetails);

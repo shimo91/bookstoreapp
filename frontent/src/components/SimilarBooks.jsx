@@ -13,6 +13,8 @@ const cardStyle = {
 
 const SimilarBooks = ({ similarBooks }) => {
 
+    var toshow = (similarBooks.length>2) ? '3' : '2';
+    console.log("show",toshow)
     var settings = {
         dots: true,
         infinite: true,

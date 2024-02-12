@@ -40,6 +40,7 @@ const UserAccount = () => {
           setPhoneNumber(response.data.phone);
           setAddress(response.data.address);
           if (response.data._id) {
+            console.log("userid",response.data._id)
             axiosInstance.get(`login/userOrders/${response.data._id}`)
               .then((orders) => {
                 // Handle the similar books data

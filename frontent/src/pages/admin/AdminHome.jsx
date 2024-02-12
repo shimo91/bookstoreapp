@@ -210,6 +210,7 @@ const AdminHome = () => {
     const did = delId;
     console.log("delete id :" + did);
     axiosAdmin.delete('books/remove/' + did).then((res) => {
+      console.log("delete",res.data.message)
       toast.success(res.data.message, {
         // Set to 15sec
         position: "bottom-right",

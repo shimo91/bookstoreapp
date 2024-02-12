@@ -2,6 +2,7 @@ import { Grid, List, ListItem, ListItemText, Pagination, Paper, Table, TableBody
 import React from 'react'
 import { arrayBufferToBase64 } from '../utils';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const OrderDetail = ({ order }) => {
     console.log("orderlist", order);
@@ -49,7 +50,7 @@ const OrderDetail = ({ order }) => {
                         {currentOrder.map((row, index) => (
 
                             <TableRow key={index} style={{textAlign:'center'}}>
-                                <TableCell >{row.bookname}</TableCell>
+                                <TableCell ><Link to={`/bookDetail/${row.bookid}`} style={{textDecoration:'none',color:'black'}}>{row.bookname}</Link></TableCell>
                                 <TableCell>{row.bookDetails.author}</TableCell>
                                 <TableCell>
                                     <img
@@ -60,13 +61,13 @@ const OrderDetail = ({ order }) => {
                                 </TableCell>
 
                                 <TableCell>
-                                    {row.bookDetails.rentUser[0] && row.bookDetails.rentUser[0].bookedon
-                                        ? new Date(row.bookDetails.rentUser[0].bookedon).toDateString()
+                                    {row.rentUser[0] && row.rentUser[0].bookedon
+                                        ? new Date(row.rentUser[0].bookedon).toDateString()
                                         : 'N/A'}
                                 </TableCell>
                                 <TableCell style={{ textAlign: 'center' }}>{row.bookDetails.rental_period}</TableCell>
                                 <TableCell>
-                                    {row.bookDetails.rentUser[0] && row.bookDetails.rentUser[0].deliveryStatus
+                                    {row.rentUser[0] && row.rentUser[0].deliveryStatus
                                         ? 'Delivered'
                                         : 'Pending'}
                                 </TableCell>

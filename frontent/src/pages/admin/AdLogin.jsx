@@ -33,7 +33,7 @@ const AdLogin = () => {
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:4000/login/admin', formData);
+      const response = await axios.post('http://127.0.0.1:4000/login/admin/', formData);
       console.log("msg :" + response.data.message);
       if (response.data.message === 'success') {
         sessionStorage.setItem('adminToken', response.data.token);

@@ -38,7 +38,7 @@ export default function SignUp() {
       address: data.address,
     }
     try {
-      const response = await axios.post('http://127.0.0.1:4000/signup', formData);
+      const response = await axios.post('http://127.0.0.1:4000/signup/', formData);
       console.log("msg :" + response.data.message);
       if (response.data.message) {
         console.log("success",response.data.message)
